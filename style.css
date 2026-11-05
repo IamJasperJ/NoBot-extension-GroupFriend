@@ -1,0 +1,438 @@
+/* 仿真群友：样式只作用于 gl- 前缀的容器；配色对齐宿主（zinc + violet），深色模式跟随 html.dark */
+.gl {
+  --gl-accent: #7c3aed;
+  --gl-accent-soft: #f5f3ff;
+  --gl-text: #18181b;
+  --gl-muted: #71717a;
+  --gl-line: #e4e4e7;
+  --gl-card: #ffffff;
+  --gl-soft: #fafafa;
+  --gl-danger: #dc2626;
+  color: var(--gl-text);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: left;
+}
+.dark .gl {
+  --gl-accent: #a78bfa;
+  --gl-accent-soft: rgb(139 92 246 / 14%);
+  --gl-text: #f4f4f5;
+  --gl-muted: #a1a1aa;
+  --gl-line: #3f3f46;
+  --gl-card: #18181b;
+  --gl-soft: rgb(255 255 255 / 3%);
+  --gl-danger: #f87171;
+}
+.gl *,
+.gl *::before,
+.gl *::after {
+  box-sizing: border-box;
+}
+.gl h3,
+.gl h4,
+.gl p {
+  margin: 0;
+}
+
+/* 控件：32px 紧凑高度；次要按钮白底描边，主按钮紫色 */
+.gl input[type="text"],
+.gl input[type="number"],
+.gl input:not([type]),
+.gl select,
+.gl textarea {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--gl-line);
+  border-radius: 8px;
+  background: var(--gl-card);
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+.gl textarea {
+  height: auto;
+  min-height: 64px;
+  padding: 6px 10px;
+  resize: vertical;
+  line-height: 1.6;
+}
+.gl input:focus-visible,
+.gl select:focus-visible,
+.gl textarea:focus-visible {
+  border-color: var(--gl-accent);
+  box-shadow: 0 0 0 3px var(--gl-accent-soft);
+}
+.gl input::placeholder,
+.gl textarea::placeholder {
+  color: var(--gl-muted);
+  opacity: 0.8;
+}
+.gl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--gl-line);
+  border-radius: 8px;
+  background: var(--gl-card);
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.gl-btn:hover:not(:disabled) {
+  background: var(--gl-soft);
+  border-color: color-mix(in srgb, var(--gl-accent) 40%, var(--gl-line));
+}
+.gl-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.gl-btn.primary {
+  border-color: var(--gl-accent);
+  background: var(--gl-accent);
+  color: #fff;
+}
+.dark .gl-btn.primary {
+  color: #18181b;
+}
+.gl-btn.primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--gl-accent) 88%, #000);
+}
+.gl-btn.ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--gl-muted);
+}
+.gl-btn.ghost:hover:not(:disabled) {
+  background: var(--gl-soft);
+  color: var(--gl-text);
+}
+.gl-btn.danger:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--gl-danger) 50%, transparent);
+  color: var(--gl-danger);
+}
+.gl-btn.icon {
+  width: 32px;
+  padding: 0;
+}
+
+/* 开关 */
+.gl-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gl-line);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.gl-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+  transition: transform 0.15s;
+}
+.gl-switch[aria-checked="true"] {
+  background: var(--gl-accent);
+}
+.gl-switch[aria-checked="true"]::after {
+  transform: translateX(16px);
+}
+.gl-switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 状态徽标 */
+.gl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--gl-soft);
+  border: 1px solid var(--gl-line);
+  color: var(--gl-muted);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.gl-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.gl-pill.lurking {
+  color: var(--gl-muted);
+}
+.gl-pill.active {
+  color: #16a34a;
+  border-color: rgb(22 163 74 / 25%);
+  background: rgb(22 163 74 / 7%);
+}
+.gl-pill.probing {
+  color: #d97706;
+  border-color: rgb(217 119 6 / 25%);
+  background: rgb(217 119 6 / 7%);
+}
+.gl-pill.exiting {
+  color: #2563eb;
+  border-color: rgb(37 99 235 / 25%);
+  background: rgb(37 99 235 / 7%);
+}
+.gl-pill.plain::before {
+  display: none;
+}
+
+/* 会话设置里的分组 */
+.gl-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gl-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.gl-row.between {
+  justify-content: space-between;
+}
+.gl-row.wrap {
+  flex-wrap: wrap;
+}
+.gl-grow {
+  flex: 1;
+  min-width: 0;
+}
+.gl-muted {
+  color: var(--gl-muted);
+  font-size: 12px;
+}
+.gl-dense {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px 10px;
+}
+.gl-dense label {
+  color: var(--gl-muted);
+  font-size: 12px;
+}
+.gl-link {
+  border: 0;
+  white-space: nowrap;
+  padding: 0;
+  background: none;
+  color: var(--gl-accent);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.gl-link:hover {
+  text-decoration: underline;
+}
+.gl-error {
+  color: var(--gl-danger);
+  font-size: 12px;
+}
+
+/* 扩展页面 */
+.gl-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.gl-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 36px;
+}
+.gl-head h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.gl-split {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.gl-card {
+  border: 1px solid var(--gl-line);
+  border-radius: 12px;
+  background: var(--gl-card);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.gl-card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.gl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gl-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.gl-item:hover {
+  background: var(--gl-soft);
+}
+.gl-item[aria-current="true"] {
+  border-color: color-mix(in srgb, var(--gl-accent) 35%, transparent);
+  background: var(--gl-accent-soft);
+}
+.gl-item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.gl-edit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.gl-edit-row > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+.gl-member {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr) 32px;
+  gap: 8px;
+  align-items: start;
+}
+.gl-empty {
+  padding: 28px 16px;
+  border: 1px dashed var(--gl-line);
+  border-radius: 12px;
+  color: var(--gl-muted);
+  text-align: center;
+  line-height: 1.8;
+}
+.gl-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--gl-soft);
+  border: 1px solid var(--gl-line);
+}
+.gl-tab {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--gl-muted);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.gl-tab[aria-selected="true"] {
+  background: var(--gl-card);
+  color: var(--gl-text);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+}
+.gl-count {
+  margin-left: 4px;
+  color: var(--gl-accent);
+  font-size: 11px;
+}
+.gl-slang {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) auto;
+  gap: 8px 10px;
+  align-items: start;
+  padding: 10px 0;
+  border-top: 1px solid var(--gl-line);
+}
+.gl-slang:first-child {
+  border-top: 0;
+}
+.gl-term {
+  font-weight: 600;
+  word-break: break-all;
+  padding-top: 5px;
+}
+.gl-example {
+  margin-top: 4px;
+  color: var(--gl-muted);
+  font-size: 12px;
+  font-style: italic;
+}
+.gl-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 720px) {
+  .gl-page {
+    padding: 14px 12px 32px;
+  }
+  .gl-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gl-member {
+    grid-template-columns: minmax(0, 1fr) 32px;
+  }
+  .gl-member > :nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .gl-slang {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gl-actions {
+    justify-content: flex-start;
+  }
+}

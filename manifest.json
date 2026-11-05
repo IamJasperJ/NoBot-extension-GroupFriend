@@ -1,0 +1,18 @@
+{
+  "id": "group-life",
+  "name": "仿真群友 / Group Friend",
+  "version": "0.1.0",
+  "description": "主动聊天、群友记忆与人工确认的黑话学习 / Proactive group chat, member memories, and human-confirmed slang learning",
+  "server": "server.ts",
+  "client": "client.js",
+  "style": "style.css",
+  "permissions": {
+    "server": true,
+    "client": true,
+    "routes": true,
+    "tools": true,
+    "hooks": true,
+    "background": true,
+    "network": []
+  }
+}

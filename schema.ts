@@ -15,6 +15,7 @@ const labels: Record<keyof typeof defaultSettings, string> = {
   connectionId: '提取连接',
   model: '提取模型',
   maxMembers: '群友印象上限',
+  injectTime: '注入时间',
   injectTopics: '注入话题',
   injectMembers: '注入群友印象',
   injectThoughts: '注入待说念头',
@@ -47,6 +48,8 @@ export function settingsSchema(): ExtensionSettingField[] {
         options: [{ value: '', label: '跟随当前会话的连接' }],
         hint: '留空跟随会话；模型留空使用连接默认模型',
       })
+    else if (key === 'injectTime')
+      result.push({ ...base, type: 'boolean', hint: '告诉角色现在几点、星期几，让问候和话题符合时间' })
     else if (key === 'model') result.push({ ...base, type: 'string', optionsSource: 'models' })
     else if (key === 'styleHint')
       result.push({ ...base, type: 'textarea', rows: 8, hint: '需要英文指令，并要求与对话使用相同语言' })

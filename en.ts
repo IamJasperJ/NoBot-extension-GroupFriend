@@ -13,6 +13,9 @@ export const en: Record<string, string> = {
   提取连接: 'Extraction connection',
   提取模型: 'Extraction model',
   群友印象上限: 'Maximum member impressions',
+  注入时间: 'Inject current time',
+  '告诉角色现在几点、星期几，让问候和话题符合时间':
+    'Tell the character the current time and day of the week so greetings and topics fit the time of day',
   注入话题: 'Inject topics',
   注入群友印象: 'Inject member impressions',
   注入待说念头: 'Inject pending thoughts',
@@ -40,6 +43,7 @@ export const en: Record<string, string> = {
   '宿主暂时拒绝主动发言，请稍后重试': 'The host declined the proactive message; try again later',
   记忆提取失败: 'Memory extraction failed',
   后台评估失败: 'Background evaluation failed',
+  仿真群友时间: 'Group Friend time',
   仿真群友风格: 'Group Friend style',
   仿真群友记忆: 'Group Friend memory',
   仿真群友黑话: 'Group Friend slang',

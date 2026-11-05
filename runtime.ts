@@ -19,6 +19,7 @@ import type { Action } from './core/state'
 import { act, nextProbeAt, resetDate, step } from './core/state'
 import { Store } from './core/store'
 import { rhythmHint, staleHint } from './core/style'
+import { timeHint } from './core/time'
 import { t } from './i18n'
 
 export type Context = Omit<ExtensionContext, 'chatId'>
@@ -72,7 +73,7 @@ export function createRuntime(
     // trigger 同步组装提示词，因此先写 pending；若宿主拒绝则完整回滚，不消耗额度。
     store.saveState(id, act(before, action, now))
     try {
-      ctx.host.trigger(id, { instruction: actionInstruction(action, memory, humans(info), now) })
+      ctx.host.trigger(id, { instruction: actionInstruction(action, memory, humans(info), now, config(id).injectTime) })
       return true
     } catch (error) {
       store.saveState(id, before)
@@ -206,6 +207,7 @@ export function createRuntime(
     const push = (id: string, label: string, content: string) => {
       if (content) injections.push({ id, label, content, position: 'after_char', role: 'system' })
     }
+    if (cfg.injectTime) push('group-life-time', t('仿真群友时间'), timeHint(now))
     if (cfg.injectStyle && cfg.styleHint.trim()) {
       const said = info.messages.filter((message) => !message.meta.excluded && message.role === 'user')
       const latest = said.at(-1)

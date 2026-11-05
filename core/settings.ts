@@ -14,6 +14,7 @@ export const defaultSettings = {
   connectionId: '',
   model: '',
   maxMembers: 60,
+  injectTime: true,
   injectTopics: true,
   injectMembers: true,
   injectThoughts: true,

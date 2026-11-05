@@ -14,6 +14,7 @@ import { changeSlang, mergeSlang, scanSlang } from './core/slang'
 import { initialState, nextProbeAt, step } from './core/state'
 import { Store } from './core/store'
 import { DEFAULT_STYLE_HINT, rhythmHint, staleHint } from './core/style'
+import { timeHint } from './core/time'
 
 const now = new Date(2026, 9, 29, 20).getTime()
 const minute = 60000
@@ -283,5 +284,48 @@ describe('群聊规则', () => {
     expect(defaultSettings.styleHint).toBe(DEFAULT_STYLE_HINT)
     expect(DEFAULT_STYLE_HINT).toContain("character's own voice")
     expect(/[一-鿿]/.test(DEFAULT_STYLE_HINT)).toBe(false)
+  })
+})
+
+describe('时间提示', () => {
+  test.each([
+    [0, 0, 'late night'],
+    [4, 59, 'late night'],
+    [5, 0, 'early morning'],
+    [7, 59, 'early morning'],
+    [8, 0, 'morning'],
+    [10, 59, 'morning'],
+    [11, 0, 'midday'],
+    [12, 59, 'midday'],
+    [13, 0, 'afternoon'],
+    [16, 59, 'afternoon'],
+    [17, 0, 'early evening'],
+    [18, 59, 'early evening'],
+    [19, 0, 'evening'],
+    [22, 59, 'evening'],
+    [23, 0, 'late night'],
+    [23, 59, 'late night'],
+  ])('%i:%i 的时段为 %s', (hour, minutes, period) => {
+    expect(timeHint(new Date(2026, 10, 5, hour, minutes).getTime())).toContain(`(${period}).`)
+  })
+  test.each(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])('星期名为 %s', (day) => {
+    const offset = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(day)
+    expect(timeHint(new Date(2026, 10, 1 + offset, 16, 45).getTime())).toStartWith(`Current local time: ${day},`)
+  })
+  test('日期、时分补零，英文提示自然使用时间', () => {
+    expect(timeHint(new Date(2026, 0, 4, 5, 7).getTime())).toBe(
+      "Current local time: Sunday, 2026-01-04 05:07 (early morning). Let the time of day shape what you say (greetings, meals, sleep, work or class), but don't announce the time unless it comes up naturally.",
+    )
+    expect(timeHint(new Date(2026, 10, 5, 16, 45).getTime())).toContain('Thursday, 2026-11-05 16:45 (afternoon)')
+  })
+  test.each(['probe', 'followup', 'exit'] as const)('%s 与普通注入共用时间提示并遵守开关', (action) => {
+    expect(actionInstruction(action, emptyMemory(), [], now, true)).toStartWith(`${timeHint(now)}\n`)
+    expect(actionInstruction(action, emptyMemory(), [], now, false)).not.toContain('Current local time:')
+  })
+  test('默认开启，允许全局关闭，拒绝会话覆盖', () => {
+    expect(settings({}).injectTime).toBe(true)
+    expect(settings({ injectTime: false }).injectTime).toBe(false)
+    expect(settings({ injectTime: 'false' }).injectTime).toBe(true)
+    expect(() => overrides({ injectTime: false })).toThrow()
   })
 })

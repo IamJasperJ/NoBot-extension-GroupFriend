@@ -27,6 +27,7 @@
   "connectionId": "",
   "model": "",
   "maxMembers": 60,
+  "injectTime": true,
   "injectTopics": true,
   "injectMembers": true,
   "injectThoughts": true,
@@ -37,6 +38,8 @@
   "injectStyle": true
 }
 ```
+
+`injectTime` 默认开启，以服务器本地时间向普通提示词和主动发言指令注入日期、星期、时间与时段；关闭后两处均不注入，不支持会话级覆盖。
 
 全局数值范围：extractEvery 5–200、extractWindow 10–200、maxMembers 1–1000、slangScanDepth 1–50。
 损坏或不合法的全局保存值逐项回退默认值。connectionId 为空跟随会话，model 为空使用连接的默认模型。

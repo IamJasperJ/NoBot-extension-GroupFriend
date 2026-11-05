@@ -7,6 +7,7 @@ import type { MessageDTO } from '../../packages/shared/src'
 import { defaultSettings } from './core/settings'
 import type { SlangEntry } from './core/slang'
 import { initialState } from './core/state'
+import { timeHint } from './core/time'
 import type { ChatDetail, ChatListItem, Option } from './dto'
 
 type TestResponse = ChatDetail & {
@@ -162,6 +163,7 @@ test('外置安装、宿主主动生成、记忆、注入、工具、黑话接�
       expect(sent.filter((message) => message.role === 'system').at(-1)!.content).toContain(
         'The group has been quiet for a while',
       )
+      expect(sent.filter((message) => message.role === 'system').at(-1)!.content).toContain(timeHint(now))
       expect(JSON.stringify(sent)).toContain('策略游戏')
       const saved = host.getChatInfo(chat.id, 30).messages.at(-1)!
       expect(saved.role).toBe('assistant')
@@ -176,6 +178,34 @@ test('外置安装、宿主主动生成、记忆、注入、工具、黑话接�
         speakerId: character.id,
         leafId: getChatRow(chat.id).activeLeafId,
       })
+      const input = { ...built.input, now: new Date(2026, 10, 5, 16, 45), injections: [] }
+      const timed = runtime.beforePrompt(input, chat.id).injections!
+      expect(timed.find((entry) => entry.id === 'group-life-time')).toMatchObject({
+        label: '仿真群友时间',
+        content: timeHint(input.now.getTime()),
+        position: 'after_char',
+        role: 'system',
+      })
+      expect(timed.findIndex((entry) => entry.id === 'group-life-time')).toBeLessThan(
+        timed.findIndex((entry) => entry.id === 'group-life-style'),
+      )
+      const untimed = createRuntime({ ...context, settings: { ...config, injectTime: false } })
+      expect(untimed.beforePrompt(input, chat.id).injections?.map((entry) => entry.id)).not.toContain('group-life-time')
+      expect(runtime.beforePrompt(input, other.id)).toBe(input)
+      const before = runtime.store.state(chat.id, now)
+      const instructions: string[] = []
+      const triggerHost = {
+        ...host,
+        trigger: (_id: string, options?: { instruction?: string }) => {
+          instructions.push(options?.instruction ?? '')
+        },
+      }
+      for (const injectTime of [true, false]) {
+        createRuntime({ ...context, host: triggerHost, settings: { ...config, injectTime } }).probe(chat.id, now)
+      }
+      runtime.store.saveState(chat.id, before)
+      expect(instructions[0]).toContain(timeHint(now))
+      expect(instructions[1]).not.toContain('Current local time:')
       expect(built.input.injections?.map((entry) => entry.id)).toContain('group-life-style')
       expect(built.input.injections?.map((entry) => entry.id)).toContain('group-life-memory')
       expect(built.input.injections?.find((entry) => entry.id === 'group-life-style')?.content).toContain(

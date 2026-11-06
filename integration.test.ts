@@ -94,7 +94,7 @@ test('外置安装、宿主主动生成、记忆、注入、工具、黑话接�
       const dto = registry.listExtensions().find((entry) => entry.id === 'group-life')!
       expect(dto.loadError).toBeFalsy()
       expect(dto.needsApproval).toBe(true)
-      registry.updateExtension('group-life', { enabled: true, approvePermissions: true, settings: config })
+      await registry.configureExtension('group-life', { enabled: true, approvePermissions: true, settings: config })
       async function request(path: string, method = 'GET', body?: unknown) {
         return registry.forwardExtension(
           'group-life',

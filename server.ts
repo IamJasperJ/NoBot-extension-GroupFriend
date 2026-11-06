@@ -29,17 +29,10 @@ export default defineExtension({
   startBackground(ctx, signal) {
     lifetime = signal
     const runtime = createRuntime(ctx, { signal })
-    let running = false
-    const timer = setInterval(() => {
-      if (running || signal.aborted) return
-      running = true
-      void runtime.tickOnce(Date.now()).finally(() => {
-        running = false
-      })
-    }, 30000)
-    timer.unref()
-    const stop = () => clearInterval(timer)
-    if (signal.aborted) stop()
-    else signal.addEventListener('abort', stop, { once: true })
+    ctx.tasks.register({
+      id: 'evaluate', name: '仿真群友 / Group Friend',
+      schedule: { kind: 'interval', everyMs: 30000, anchor: 0 },
+      misfire: 'skip',
+    }, () => runtime.tickOnce(Date.now()))
   },
 })
